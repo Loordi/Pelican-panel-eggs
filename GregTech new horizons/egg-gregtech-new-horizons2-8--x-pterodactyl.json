@@ -1,0 +1,156 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2025-11-12T15:39:04+02:00",
+    "name": "Gregtech New Horizons 2.8.X pterodactyl",
+    "author": "looordi@orkenstein.com",
+    "description": "GTNH egg for versions 2.8.0+ (Java 17\u201325).\r\nComes with an update script that handles updates easily.\r\nJust change the version and reinstall.\r\nMake sure to back up before reinstalling!\r\n\r\nMore info:\r\nhttps:\/\/wiki.gtnewhorizons.com\/wiki\/Server_Setup#Server_Update\r\n\r\nhttps:\/\/www.gtnewhorizons.com\/downloads\/",
+    "features": [
+        "eula"
+    ],
+    "docker_images": {
+        "Java25": "ghcr.io\/parkervcp\/yolks:java_25",
+        "Java21": "ghcr.io\/parkervcp\/yolks:java_21",
+        "Java17": "ghcr.io\/parkervcp\/yolks:java_17"
+    },
+    "file_denylist": [],
+    "startup": "java -Xmx{{SERVER_MAXRAM}} -Dfml.readTimeout=180 @java9args.txt -jar lwjgl3ify-forgePatches.jar nogui",
+    "config": {
+        "files": "{\r\n    \"server.properties\": {\r\n        \"parser\": \"properties\",\r\n        \"find\": {\r\n            \"server-ip\": \"0.0.0.0\",\r\n            \"server-port\": \"{{server.build.default.port}}\",\r\n            \"query.port\": \"{{env.SERVER_QUERY_PORT}}\",\r\n            \"rcon.port\": \"{{env.SERVER_RCON_PORT}}\",\r\n            \"enable-rcon\": \"{{env.SERVER_RCON}}\",\r\n            \"enable-query\": \"{{env.SERVER_QUERY}}\",\r\n            \"level-name\": \"{{env.LEVEL_NAME}}\",\r\n            \"level-seed\": \"{{env.SERVER_SEED}}\",\r\n            \"hardcore\": \"{{env.SERVER_HARDCORE}}\",\r\n            \"max-players\": \"{{env.MAX_PLAYERS}}\",\r\n            \"motd\": \"{{env.SERVER_MOTD}}\",\r\n            \"white-list\": \"{{env.SERVER_WHITELIST}}\"\r\n        }\r\n    }\r\n}",
+        "startup": "{\r\n    \"done\": \")! For help, type \"\r\n}",
+        "logs": "{}",
+        "stop": "stop"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/ash\n# Gregtech New Horizons V2.8.X Install Script\n\n: \"${GTVERSION:=2.8.1}\"  # default if not set\nGTNH_ZIP_FILE=\"GT_New_Horizons_${GTVERSION}_Server_Java_17-25.zip\"\n\n# Ensure server directory exists\nif [ ! -d \/mnt\/server ]; then\n  mkdir -p \/mnt\/server\nfi\n\nBASE_DIR=\"\/mnt\/server\"\nBACKUP_DIR=\"$BASE_DIR\/installtemp\"\n\n# Backup JourneyMapServer if it exists\nif [ -d \"$BASE_DIR\/config\/JourneyMapServer\" ]; then\n  echo \"Backing up JourneyMapServer to $BACKUP_DIR...\"\n  mkdir -p \"$BACKUP_DIR\"\n  cp -r \"$BASE_DIR\/config\/JourneyMapServer\" \"$BACKUP_DIR\/\"\nelse\n  echo \"No JourneyMapServer directory found to back up.\"\nfi\n\n# Delete the old files\/folders\necho \"Deleting old files and folders...\"\nrm -rf \\\n  \"$BASE_DIR\/config\" \\\n  \"$BASE_DIR\/libraries\" \\\n  \"$BASE_DIR\/mods\" \\\n  \"$BASE_DIR\/lwjgl3ify-forgePatches.jar\" \\\n  \"$BASE_DIR\/java9args.txt\"\n\n# Install dependencies\nif command -v apk >\/dev\/null 2>&1; then\n  apk --no-cache add curl unzip\nelif command -v apt >\/dev\/null 2>&1; then\n  apt update && apt install -y curl unzip\nfi\n\n# Download and extract GTNH server\ncd \"$BASE_DIR\"\necho \"Downloading and extracting $GTNH_ZIP_FILE...\"\ncurl -L -o \"$GTNH_ZIP_FILE\" \"https:\/\/downloads.gtnewhorizons.com\/ServerPacks\/$GTNH_ZIP_FILE\"\nunzip -n \"$GTNH_ZIP_FILE\"\nrm -f \"$GTNH_ZIP_FILE\" *.md *.bat\n\nchmod +x startserver-java9.sh\n\n# Restore backed-up files\nif [ -d \"$BACKUP_DIR\" ]; then\n  echo \"Restoring files from installtemp...\"\n  cp -r \"$BACKUP_DIR\/JourneyMapServer\" \"$BASE_DIR\/config\"\nelse\n  echo \"No installtemp folder found \u2014 skipping restore.\"\nfi\n\necho \"Installation process is completed\"",
+            "container": "alpine:3.4",
+            "entrypoint": "ash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Modpack version",
+            "description": "GTNH version for java 17-25 file. 2.8.x and up supported",
+            "env_variable": "GTVERSION",
+            "default_value": "2.8.1",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:20",
+            "field_type": "text"
+        },
+        {
+            "name": "World Name",
+            "description": "Change the default world name",
+            "env_variable": "LEVEL_NAME",
+            "default_value": "World",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:20",
+            "field_type": "text"
+        },
+        {
+            "name": "Server Ram",
+            "description": "Allocate ram to your server",
+            "env_variable": "SERVER_MAXRAM",
+            "default_value": "6G",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:5",
+            "field_type": "text"
+        },
+        {
+            "name": "Hardcore Mode",
+            "description": "Enable Hardcore Mode for the world",
+            "env_variable": "SERVER_HARDCORE",
+            "default_value": "0",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
+            "field_type": "text"
+        },
+        {
+            "name": "Max Players",
+            "description": "Set a total server player limit",
+            "env_variable": "MAX_PLAYERS",
+            "default_value": "20",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|numeric",
+            "field_type": "text"
+        },
+        {
+            "name": "Message of the Day",
+            "description": "Set the server MOTD",
+            "env_variable": "SERVER_MOTD",
+            "default_value": "GT:New Horizons",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string",
+            "field_type": "text"
+        },
+        {
+            "name": "Server Seed",
+            "description": "Set a custom seed for the World map",
+            "env_variable": "SERVER_SEED",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string",
+            "field_type": "text"
+        },
+        {
+            "name": "Server Whitelist",
+            "description": "Enable\/Disable Server Whitelist",
+            "env_variable": "SERVER_WHITELIST",
+            "default_value": "1",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
+            "field_type": "text"
+        },
+        {
+            "name": "Query Port",
+            "description": "Set the query port for the server",
+            "env_variable": "SERVER_QUERY_PORT",
+            "default_value": "25565",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|numeric",
+            "field_type": "text"
+        },
+        {
+            "name": "Query Status",
+            "description": "Set server query status enabled\/disabled",
+            "env_variable": "SERVER_QUERY",
+            "default_value": "0",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
+            "field_type": "text"
+        },
+        {
+            "name": "Rcon Status",
+            "description": "Enable or disable server rcon",
+            "env_variable": "SERVER_RCON",
+            "default_value": "0",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
+            "field_type": "text"
+        },
+        {
+            "name": "Server Rcon Port",
+            "description": "Set the server rcon port",
+            "env_variable": "SERVER_RCON_PORT",
+            "default_value": "25575",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|numeric",
+            "field_type": "text"
+        }
+    ]
+}
