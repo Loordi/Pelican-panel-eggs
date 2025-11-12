@@ -4,7 +4,7 @@
         "version": "PLCN_v3",
         "update_url": null
     },
-    "exported_at": "2025-11-11T10:40:45+00:00",
+    "exported_at": "2025-11-12T10:57:03+00:00",
     "name": "Gregtech New Horizons 2.8.X",
     "author": "looordi@orkenstein.com",
     "uuid": "18d7ce4c-33a5-4d3e-bd5b-8beb85200da1",
@@ -70,7 +70,7 @@
             "name": "Message of the Day",
             "description": "Set the server MOTD",
             "env_variable": "SERVER_MOTD",
-            "default_value": "A Minecraft Server",
+            "default_value": "GT:New Horizons",
             "user_viewable": true,
             "user_editable": true,
             "rules": [
