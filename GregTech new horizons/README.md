@@ -11,6 +11,10 @@ Config-safe reinstall (keeps JourneyMapServer data)
 
 ---
 
+Added egg for pterodactyl (not compatible with pelican panel)
+
+---
+
 ## More Information
 - [GTNH Wiki — Server Setup & Update Guide](https://wiki.gtnewhorizons.com/wiki/Server_Setup#Server_Update)
 - [GTNH Official Downloads](https://www.gtnewhorizons.com/downloads/)
