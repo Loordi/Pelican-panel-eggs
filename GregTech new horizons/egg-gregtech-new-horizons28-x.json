@@ -4,7 +4,7 @@
         "version": "PLCN_v3",
         "update_url": null
     },
-    "exported_at": "2025-11-12T10:57:03+00:00",
+    "exported_at": "2025-12-05T10:25:54+00:00",
     "name": "Gregtech New Horizons 2.8.X",
     "author": "looordi@orkenstein.com",
     "uuid": "18d7ce4c-33a5-4d3e-bd5b-8beb85200da1",
@@ -94,7 +94,7 @@
         {
             "name": "Query Port",
             "description": "Set the query port for the server",
-            "env_variable": "SERVER_QEURY_PORT",
+            "env_variable": "SERVER_QUERY_PORT",
             "default_value": "25565",
             "user_viewable": true,
             "user_editable": true,
