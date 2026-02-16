@@ -11,7 +11,7 @@ Config-safe reinstall (keeps JourneyMapServer data)
 
 ---
 
-Added egg for pterodactyl (not compatible with pelican panel)
+Pterodactyl version found [here](https://github.com/Loordi/Pterodactyl-eggs)
 
 ---
 
