@@ -7,7 +7,7 @@
     "exported_at": "2026-04-09T05:48:17+00:00",
     "name": "Gregtech New Horizons 2.8.X + Twist Space Technology",
     "author": "looordi@orkenstein.com",
-    "uuid": "18d7ce4c-33a5-4d3e-bd5b-8beb85200da1",
+    "uuid": "b04ec56e-cb5d-432a-a1e1-4f9bf9d8da46",
     "description": "GTNH egg for versions 2.8.0+ (Java 17–25) with Twist Space Technology enabled.\nComes with an update script that handles GTNH updates and TST download during reinstall.\nFor TST, the maintained pairing in the upstream README is GTNH 2.8.4 + TST 0.7.+.\nSet 'Update Twist Space Technology' to 1 only when updating TST so the required config/lang files are reset.\nMake sure to back up before reinstalling!\n\nMore info:\nhttps://wiki.gtnewhorizons.com/wiki/Server_Setup#Server_Update\n\nhttps://www.gtnewhorizons.com/downloads/",
     "image": null,
     "tags": [
