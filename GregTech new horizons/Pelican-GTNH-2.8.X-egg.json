@@ -48,7 +48,6 @@
             "user_editable": true,
             "rules": [
                 "required",
-                "max:1",
                 "boolean"
             ],
             "sort": 4
@@ -113,8 +112,7 @@
             "user_editable": true,
             "rules": [
                 "required",
-                "boolean",
-                "max:1"
+                "boolean"
             ],
             "sort": 10
         },
@@ -127,8 +125,7 @@
             "user_editable": true,
             "rules": [
                 "required",
-                "boolean",
-                "max:1"
+                "boolean"
             ],
             "sort": 11
         },
@@ -181,8 +178,7 @@
             "user_editable": true,
             "rules": [
                 "required",
-                "boolean",
-                "max:1"
+                "boolean"
             ],
             "sort": 8
         },
