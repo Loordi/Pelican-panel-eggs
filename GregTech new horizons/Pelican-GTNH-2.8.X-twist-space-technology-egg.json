@@ -1,26 +1,33 @@
 {
-    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PANEL",
     "meta": {
-        "version": "PTDL_v2",
+        "version": "PLCN_v3",
         "update_url": null
     },
-    "exported_at": "2026-04-09T11:05:08+03:00",
-    "name": "GTNH 2.8.X + Twist Space Technology",
+    "exported_at": "2026-04-09T05:48:17+00:00",
+    "name": "Gregtech New Horizons 2.8.X + Twist Space Technology",
     "author": "looordi@orkenstein.com",
-    "description": "GTNH 2.8.x egg for Java 17-25 with Twist Space Technology enabled.\nMain server port follows the panel allocation port.\nQuery and RCON remain configurable via variables.\nReinstall updates GTNH and re-downloads TST.",
+    "uuid": "18d7ce4c-33a5-4d3e-bd5b-8beb85200da1",
+    "description": "GTNH egg for versions 2.8.0+ (Java 17–25) with Twist Space Technology enabled.\nComes with an update script that handles GTNH updates and TST download during reinstall.\nFor TST, the maintained pairing in the upstream README is GTNH 2.8.4 + TST 0.7.+.\nSet 'Update Twist Space Technology' to 1 only when updating TST so the required config/lang files are reset.\nMake sure to back up before reinstalling!\n\nMore info:\nhttps://wiki.gtnewhorizons.com/wiki/Server_Setup#Server_Update\n\nhttps://www.gtnewhorizons.com/downloads/",
+    "image": null,
+    "tags": [
+        "minecraft"
+    ],
     "features": [
         "eula"
     ],
     "docker_images": {
-        "Java25": "ghcr.io/parkervcp/yolks:java_25",
-        "Java21": "ghcr.io/parkervcp/yolks:java_21",
-        "Java17": "ghcr.io/parkervcp/yolks:java_17"
+        "Java 25": "ghcr.io/parkervcp/yolks:java_25",
+        "Java 17": "ghcr.io/parkervcp/yolks:java_17",
+        "Java 21": "ghcr.io/parkervcp/yolks:java_21"
     },
     "file_denylist": [],
-    "startup": "java -Xmx{{SERVER_MAXRAM}} -Dfml.readTimeout=180 @java9args.txt -jar lwjgl3ify-forgePatches.jar nogui",
+    "startup_commands": {
+        "Default": "java  -Xmx{{SERVER_MAXRAM}} -Dfml.readTimeout=180 @java9args.txt -jar lwjgl3ify-forgePatches.jar nogui"
+    },
     "config": {
         "files": "{\n    \"server.properties\": {\n        \"parser\": \"properties\",\n        \"find\": {\n            \"server-ip\": \"0.0.0.0\",\n            \"server-port\": \"{{server.build.default.port}}\",\n            \"query.port\": \"{{env.SERVER_QUERY_PORT}}\",\n            \"rcon.port\": \"{{env.SERVER_RCON_PORT}}\",\n            \"enable-rcon\": \"{{env.SERVER_RCON}}\",\n            \"enable-query\": \"{{env.SERVER_QUERY}}\",\n            \"level-name\": \"{{env.LEVEL_NAME}}\",\n            \"level-seed\": \"{{env.SERVER_SEED}}\",\n            \"hardcore\": \"{{env.SERVER_HARDCORE}}\",\n            \"max-players\": \"{{env.MAX_PLAYERS}}\",\n            \"motd\": \"{{env.SERVER_MOTD}}\",\n            \"white-list\": \"{{env.SERVER_WHITELIST}}\"\n        }\n    }\n}",
-        "startup": "{\r\n    \"done\": \")! For help, type \"\r\n}",
+        "startup": "{\n    \"done\": \")! For help, type \"\n}",
         "logs": "{}",
         "stop": "stop"
     },
@@ -33,44 +40,17 @@
     },
     "variables": [
         {
-            "name": "Modpack version",
-            "description": "GTNH version for java 17-25 file. TST upstream currently maintains/supports GTNH 2.8.4 with TST 0.7.+",
-            "env_variable": "GTVERSION",
-            "default_value": "2.8.4",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": "required|string|max:20",
-            "field_type": "text"
-        },
-        {
-            "name": "World Name",
-            "description": "Change the default world name",
-            "env_variable": "LEVEL_NAME",
-            "default_value": "World",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": "required|string|max:20",
-            "field_type": "text"
-        },
-        {
-            "name": "Server Ram",
-            "description": "Allocate ram to your server",
-            "env_variable": "SERVER_MAXRAM",
-            "default_value": "6G",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": "required|string|max:5",
-            "field_type": "text"
-        },
-        {
             "name": "Hardcore Mode",
             "description": "Enable Hardcore Mode for the world",
             "env_variable": "SERVER_HARDCORE",
             "default_value": "false",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|boolean",
-            "field_type": "text"
+            "rules": [
+                "required",
+                "boolean"
+            ],
+            "sort": 4
         },
         {
             "name": "Max Players",
@@ -79,38 +59,36 @@
             "default_value": "20",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|numeric",
-            "field_type": "text"
+            "rules": [
+                "required",
+                "numeric"
+            ],
+            "sort": 5
         },
         {
             "name": "Message of the Day",
             "description": "Set the server MOTD",
             "env_variable": "SERVER_MOTD",
-            "default_value": "GT:New Horizons with TST",
+            "default_value": "GT:New Horizons",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "nullable|string",
-            "field_type": "text"
+            "rules": [
+                "nullable",
+                "string"
+            ],
+            "sort": 6
         },
         {
-            "name": "Server Seed",
-            "description": "Set a custom seed for the World map",
-            "env_variable": "SERVER_SEED",
-            "default_value": "",
+            "name": "Modpack version",
+            "description": "GTNH version for java 17-25 file. 2.8.x and up supported",
+            "env_variable": "GTVERSION",
+            "default_value": "2.8.4",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "nullable|string",
-            "field_type": "text"
-        },
-        {
-            "name": "Server Whitelist",
-            "description": "Enable/Disable Server Whitelist",
-            "env_variable": "SERVER_WHITELIST",
-            "default_value": "true",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": "required|boolean",
-            "field_type": "text"
+            "rules": [
+                "required"
+            ],
+            "sort": 1
         },
         {
             "name": "Query Port",
@@ -119,8 +97,11 @@
             "default_value": "25565",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|numeric",
-            "field_type": "text"
+            "rules": [
+                "required",
+                "numeric"
+            ],
+            "sort": 9
         },
         {
             "name": "Query Status",
@@ -129,8 +110,11 @@
             "default_value": "false",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|boolean",
-            "field_type": "text"
+            "rules": [
+                "required",
+                "boolean"
+            ],
+            "sort": 10
         },
         {
             "name": "Rcon Status",
@@ -139,8 +123,25 @@
             "default_value": "false",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|boolean",
-            "field_type": "text"
+            "rules": [
+                "required",
+                "boolean"
+            ],
+            "sort": 11
+        },
+        {
+            "name": "Server Ram",
+            "description": "Allocate ram to your server",
+            "env_variable": "SERVER_MAXRAM",
+            "default_value": "6G",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "required",
+                "string",
+                "max:3"
+            ],
+            "sort": 3
         },
         {
             "name": "Server Rcon Port",
@@ -149,8 +150,51 @@
             "default_value": "25575",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|numeric",
-            "field_type": "text"
+            "rules": [
+                "required",
+                "numeric"
+            ],
+            "sort": 12
+        },
+        {
+            "name": "Server Seed",
+            "description": "Set a custom seed for the World map",
+            "env_variable": "SERVER_SEED",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "nullable",
+                "string"
+            ],
+            "sort": 7
+        },
+        {
+            "name": "Server Whitelist",
+            "description": "Enable/Disable Server Whitelist",
+            "env_variable": "SERVER_WHITELIST",
+            "default_value": "false",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "required",
+                "boolean"
+            ],
+            "sort": 8
+        },
+        {
+            "name": "World Name",
+            "description": "Change the default world name",
+            "env_variable": "LEVEL_NAME",
+            "default_value": "World",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "required",
+                "string",
+                "max:20"
+            ],
+            "sort": 2
         },
         {
             "name": "Twist Space Technology version",
@@ -159,8 +203,12 @@
             "default_value": "latest",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|string|max:30",
-            "field_type": "text"
+            "rules": [
+                "required",
+                "string",
+                "max:30"
+            ],
+            "sort": 13
         },
         {
             "name": "Update Twist Space Technology",
@@ -169,8 +217,11 @@
             "default_value": "0",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|in:0,1",
-            "field_type": "text"
+            "rules": [
+                "required",
+                "in:0,1"
+            ],
+            "sort": 14
         }
     ]
 }
