@@ -43,7 +43,7 @@
             "name": "Hardcore Mode",
             "description": "Enable Hardcore Mode for the world",
             "env_variable": "SERVER_HARDCORE",
-            "default_value": "0",
+            "default_value": "false",
             "user_viewable": true,
             "user_editable": true,
             "rules": [
@@ -108,7 +108,7 @@
             "name": "Query Status",
             "description": "Set server query status enabled/disabled",
             "env_variable": "SERVER_QUERY",
-            "default_value": "0",
+            "default_value": "false",
             "user_viewable": true,
             "user_editable": true,
             "rules": [
@@ -122,7 +122,7 @@
             "name": "Rcon Status",
             "description": "Enable or disable server rcon",
             "env_variable": "SERVER_RCON",
-            "default_value": "0",
+            "default_value": "false",
             "user_viewable": true,
             "user_editable": true,
             "rules": [
@@ -176,7 +176,7 @@
             "name": "Server Whitelist",
             "description": "Enable/Disable Server Whitelist",
             "env_variable": "SERVER_WHITELIST",
-            "default_value": "1",
+            "default_value": "false",
             "user_viewable": true,
             "user_editable": true,
             "rules": [
