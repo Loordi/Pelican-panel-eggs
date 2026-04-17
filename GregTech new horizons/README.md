@@ -9,7 +9,7 @@ Config-safe reinstall (keeps JourneyMapServer data)
 
 ⚠️ Always back up your world before reinstalling!
 
-Added version with Twist space technology
+Added version with Twist space technology.
 Toggle updating the addon in the env and reinstall
 
 ---
