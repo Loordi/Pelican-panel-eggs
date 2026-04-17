@@ -9,6 +9,9 @@ Config-safe reinstall (keeps JourneyMapServer data)
 
 ⚠️ Always back up your world before reinstalling!
 
+Added version with Twist space technology
+Toggle updating the addon in the env and reinstall
+
 ---
 
 Pterodactyl version found [here](https://github.com/Loordi/Pterodactyl-eggs)
