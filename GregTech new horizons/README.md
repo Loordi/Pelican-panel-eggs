@@ -17,7 +17,7 @@ Toggle updating the addon in the env and reinstall
 
 ---
 
-Pterodactyl version found [here](https://github.com/Loordi/Pterodactyl-eggs)
+Pterodactyl version found [here](https://github.com/Loordi/Pterodactyl-eggs/tree/main/GregTech%20new%20horizons)
 
 ---
 
