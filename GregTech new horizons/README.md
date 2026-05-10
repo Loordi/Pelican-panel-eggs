@@ -8,7 +8,7 @@ Requires github token.
 
 This egg automates much of the manual setup described in the official documentation.
 just change the version and reinstall to update.
-Config-safe reinstall (keeps JourneyMapServer data)
+JourneyMapServer data is kept when reinstalled.
 
 ⚠️ Always back up your world before reinstalling!
 
@@ -27,7 +27,7 @@ Container reserved memory changed from 90% to 95% for gtnh
 
 ---
 
-Pterodactyl version found [here](https://github.com/Loordi/Pterodactyl-eggs)
+Pterodactyl version found [here](https://github.com/Loordi/Pterodactyl-eggs/tree/main/GregTech%20new%20horizons)
 
 ---
 
