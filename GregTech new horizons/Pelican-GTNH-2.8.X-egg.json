@@ -2,13 +2,12 @@
     "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PANEL",
     "meta": {
         "version": "PLCN_v3",
-        "update_url": null
+        "update_url": "https://raw.githubusercontent.com/Loordi/Pelican-panel-eggs/main/GregTech%20new%20horizons/Pelican-GTNH-2.8.X-egg.json"
     },
-    "exported_at": "2026-05-11T07:39:40+00:00",
+    "exported_at": "2026-05-11T08:19:22+00:00",
     "name": "Gregtech New Horizons 2.8.X",
     "author": "looordi@orkenstein.com",
     "uuid": "18d7ce4c-33a5-4d3e-bd5b-8beb85200da1",
-    "description": "GTNH egg for versions 2.8.0+ (Java 17-25). Supports stable releases and optional latest daily builds.\nComes with an update script that handles updates easily (custom edits to configs reset on reinstall).\nJust change the version and reinstall to update (stable to daily update works too).\nMake sure to back up before reinstalling!\n\nDaily builds: set GTNH_DAILY=true to install the latest successful server.jar.\n\nMore info:\nhttps://wiki.gtnewhorizons.com/wiki/Server_Setup#Server_Update\n\nhttps://www.gtnewhorizons.com/downloads/",
     "icon": null,
     "tags": [
         "minecraft"
@@ -18,8 +17,8 @@
     ],
     "docker_images": {
         "Java 25": "ghcr.io/parkervcp/yolks:java_25",
-        "Java 17": "ghcr.io/parkervcp/yolks:java_17",
-        "Java 21": "ghcr.io/parkervcp/yolks:java_21"
+        "Java 21": "ghcr.io/parkervcp/yolks:java_21",
+        "Java 17": "ghcr.io/parkervcp/yolks:java_17"
     },
     "file_denylist": [],
     "startup_commands": {
@@ -119,7 +118,6 @@
         },
         {
             "name": "Old memory env (deprecated)",
-            "description": "Legacy compatibility to prevent a crash only if installed using earlier verson of this egg. \nUpdate startup command manually in admin view if so: \njava -Xms128M -XX:MaxRAMPercentage=95.0 -Dfml.readTimeout=180 @java9args.txt -jar lwjgl3ify-forgePatches.jar nogui",
             "env_variable": "SERVER_MAXRAM",
             "default_value": "6G",
             "user_viewable": true,
