@@ -4,12 +4,12 @@
         "version": "PLCN_v3",
         "update_url": null
     },
-    "exported_at": "2026-04-09T05:48:17+00:00",
+    "exported_at": "2026-05-12T09:16:34+00:00",
     "name": "Gregtech New Horizons 2.8.X + Twist Space Technology",
     "author": "looordi@orkenstein.com",
     "uuid": "b04ec56e-cb5d-432a-a1e1-4f9bf9d8da46",
-    "description": "GTNH egg for versions 2.8.0+ (Java 17–25) with Twist Space Technology enabled.\nComes with an update script that handles GTNH updates and TST download during reinstall.\nFor TST, the maintained pairing in the upstream README is GTNH 2.8.4 + TST 0.7.+.\nSet 'Update Twist Space Technology' to 1 only when updating TST so the required config/lang files are reset.\nMake sure to back up before reinstalling!\n\nMore info:\nhttps://wiki.gtnewhorizons.com/wiki/Server_Setup#Server_Update\n\nhttps://www.gtnewhorizons.com/downloads/",
-    "image": null,
+    "description": "GTNH egg for versions 2.8.0+ (Java 17\u201325) with Twist Space Technology enabled.\nComes with an update script that handles GTNH updates and TST download during reinstall.\nFor TST, the maintained pairing in the upstream README is GTNH 2.8.4 + TST 0.7.+.\nSet 'Update Twist Space Technology' to 1 only when updating TST so the required config/lang files are reset.\nMake sure to back up before reinstalling!\n\nMore info:\nhttps://wiki.gtnewhorizons.com/wiki/Server_Setup#Server_Update\n\nhttps://www.gtnewhorizons.com/downloads/",
+    "icon": null,
     "tags": [
         "minecraft"
     ],
@@ -18,8 +18,8 @@
     ],
     "docker_images": {
         "Java 25": "ghcr.io/parkervcp/yolks:java_25",
-        "Java 17": "ghcr.io/parkervcp/yolks:java_17",
-        "Java 21": "ghcr.io/parkervcp/yolks:java_21"
+        "Java 21": "ghcr.io/parkervcp/yolks:java_21",
+        "Java 17": "ghcr.io/parkervcp/yolks:java_17"
     },
     "file_denylist": [],
     "startup_commands": {
@@ -33,12 +33,51 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!/bin/bash\n# GregTech New Horizons 2.8.X + Twist Space Technology Install Script\n# Stable GTNH only. No daily build support.\n# Uses temp install validation before replacing old pack files.\n\nset -euo pipefail\ntrap 'echo \"ERROR: install failed on line $LINENO\"; exit 1' ERR\n\n: \"${GTVERSION:=2.8.4}\"\n: \"${TST_VERSION:=latest}\"\n: \"${TST_UPDATE:=0}\"\n\nBASE_DIR=\"/mnt/server\"\nWORK_DIR=\"$BASE_DIR/.gtnh-install-work\"\nEXTRACT_DIR=\"$WORK_DIR/extracted\"\nBACKUP_DIR=\"$WORK_DIR/backup\"\n\nmkdir -p \"$BASE_DIR\"\n\necho \"Installing dependencies...\"\napt update\nDEBIAN_FRONTEND=noninteractive apt install -y curl unzip ca-certificates rsync\n\nrm -rf \"$WORK_DIR\"\nmkdir -p \"$EXTRACT_DIR\" \"$BACKUP_DIR\"\n\nvalidate_pack() {\n  local dir=\"$1\"\n\n  if [[ ! -f \"$dir/java9args.txt\" ]]; then\n    echo \"ERROR: downloaded pack is missing java9args.txt\"\n    find \"$dir\" -maxdepth 2 -type f | sed 's#^#  #' | head -n 80\n    exit 1\n  fi\n\n  if [[ ! -f \"$dir/lwjgl3ify-forgePatches.jar\" ]]; then\n    echo \"ERROR: downloaded pack is missing lwjgl3ify-forgePatches.jar\"\n    find \"$dir\" -maxdepth 2 -type f | sed 's#^#  #' | head -n 80\n    exit 1\n  fi\n\n  echo \"Pack validation OK.\"\n}\n\ndownload_stable_to_temp() {\n  local zip_file=\"GT_New_Horizons_${GTVERSION}_Server_Java_17-25.zip\"\n  local url=\"https://downloads.gtnewhorizons.com/ServerPacks/${zip_file}\"\n\n  echo \"Downloading stable GTNH ${GTVERSION}...\"\n  curl -fL --connect-timeout 20 --max-time 900 --retry 3 --retry-delay 3 \\\n    -o \"$WORK_DIR/$zip_file\" \"$url\"\n\n  unzip -q -o \"$WORK_DIR/$zip_file\" -d \"$EXTRACT_DIR\"\n  validate_pack \"$EXTRACT_DIR\"\n}\n\ndownload_tst() {\n  echo \"Twist Space Technology support is always enabled in this egg.\"\n\n  if [[ \"$GTVERSION\" != \"2.8.4\" ]]; then\n    echo \"WARNING: TST upstream README has listed GTNH 2.8.4 as the maintained/supported branch.\"\n    echo \"WARNING: You selected GTVERSION=$GTVERSION. Continuing anyway.\"\n  fi\n\n  mkdir -p \"$BASE_DIR/mods\"\n\n  if [[ -z \"$TST_VERSION\" || \"$TST_VERSION\" == \"latest\" ]]; then\n    echo \"Resolving latest TST release tag...\"\n    TST_VERSION=\"$(curl -fsSLI -o /dev/null -w '%{url_effective}' https://github.com/Nxer/Twist-Space-Technology-Mod/releases/latest | sed 's#.*/##')\"\n    if [[ -z \"$TST_VERSION\" ]]; then\n      echo \"ERROR: Failed to resolve latest TST release tag.\"\n      exit 1\n    fi\n  fi\n\n  local tst_jar=\"TwistSpaceTechnology-${TST_VERSION}.jar\"\n  local tst_url=\"https://github.com/Nxer/Twist-Space-Technology-Mod/releases/download/${TST_VERSION}/${tst_jar}\"\n\n  echo \"Removing old TST jars...\"\n  find \"$BASE_DIR/mods\" -maxdepth 1 -type f \\( -name 'TwistSpaceTechnology-*.jar' -o -name 'TwistSpaceTechnology *.jar' \\) -delete\n\n  echo \"Downloading ${tst_jar}...\"\n  curl -fL --connect-timeout 20 --max-time 900 --retry 3 --retry-delay 3 \\\n    -o \"$BASE_DIR/mods/$tst_jar\" \"$tst_url\"\n\n  if [[ \"$TST_UPDATE\" == \"1\" ]]; then\n    echo \"TST update mode enabled -> resetting GregTech.lang and TwistSpaceTechnology.cfg as recommended by the TST README...\"\n    rm -f \"$BASE_DIR/GregTech.lang\" \"$BASE_DIR/config/GregTech.lang\"\n    rm -f \"$BASE_DIR/config/TwistSpaceTechnology.cfg\"\n  else\n    echo \"TST update mode disabled -> keeping existing GregTech.lang and TwistSpaceTechnology.cfg\"\n  fi\n}\n\ndownload_stable_to_temp\n\nif [[ -d \"$BASE_DIR/config/JourneyMapServer\" ]]; then\n  echo \"Backing up JourneyMapServer...\"\n  cp -a \"$BASE_DIR/config/JourneyMapServer\" \"$BACKUP_DIR/\"\nelse\n  echo \"No JourneyMapServer directory found to back up.\"\nfi\n\necho \"Replacing old GTNH pack files and folders...\"\nrm -rf \\\n  \"$BASE_DIR/config\" \\\n  \"$BASE_DIR/libraries\" \\\n  \"$BASE_DIR/mods\" \\\n  \"$BASE_DIR/lwjgl3ify-forgePatches.jar\" \\\n  \"$BASE_DIR/java9args.txt\"\n\nrsync -a --no-perms \\\n  --exclude='.gtnh-install-work' \\\n  \"$EXTRACT_DIR\"/ \"$BASE_DIR\"/\n\nif [[ -d \"$BACKUP_DIR/JourneyMapServer\" ]]; then\n  echo \"Restoring JourneyMapServer...\"\n  mkdir -p \"$BASE_DIR/config\"\n  cp -a \"$BACKUP_DIR/JourneyMapServer\" \"$BASE_DIR/config/\"\nelse\n  echo \"No JourneyMapServer backup found - skipping restore.\"\nfi\n\ndownload_tst\n\n# This also prevents permission issues from downloaded zips/artifacts.\necho \"Fixing file and directory permissions...\"\nfind \"$BASE_DIR\" -type d -exec chmod 755 {} \\;\nfind \"$BASE_DIR\" -type f -exec chmod 644 {} \\;\n\nrm -f \"$BASE_DIR\"/*.bat\n\nif [[ -f \"$BASE_DIR/startserver-java9.sh\" ]]; then\n  chmod +x \"$BASE_DIR/startserver-java9.sh\"\nfi\n\nrm -rf \"$WORK_DIR\"\n\necho \"Installation process is completed\"\n",
+            "script": "#!/bin/bash\n# GregTech New Horizons 2.8.X + Twist Space Technology Install Script\n# Stable GTNH only. No daily build support.\n# Uses temp install validation before replacing old pack files.\n# 12.5.2026\n# Now preserves ops, whitelist, both banned json and servertutil changes\n\nset -euo pipefail\ntrap 'echo \"ERROR: install failed on line $LINENO\"; exit 1' ERR\n\n: \"${GTVERSION:=2.8.4}\"\n: \"${TST_VERSION:=latest}\"\n: \"${TST_UPDATE:=0}\"\n\nBASE_DIR=\"/mnt/server\"\nWORK_DIR=\"$BASE_DIR/.gtnh-install-work\"\nEXTRACT_DIR=\"$WORK_DIR/extracted\"\nBACKUP_DIR=\"$WORK_DIR/backup\"\n\nmkdir -p \"$BASE_DIR\"\n\necho \"Installing dependencies...\"\napt update\nDEBIAN_FRONTEND=noninteractive apt install -y curl unzip ca-certificates rsync\n\nrm -rf \"$WORK_DIR\"\nmkdir -p \"$EXTRACT_DIR\" \"$BACKUP_DIR\"\n\nvalidate_pack() {\n  local dir=\"$1\"\n\n  if [[ ! -f \"$dir/java9args.txt\" ]]; then\n    echo \"ERROR: downloaded pack is missing java9args.txt\"\n    find \"$dir\" -maxdepth 2 -type f | sed 's#^#  #' | head -n 80\n    exit 1\n  fi\n\n  if [[ ! -f \"$dir/lwjgl3ify-forgePatches.jar\" ]]; then\n    echo \"ERROR: downloaded pack is missing lwjgl3ify-forgePatches.jar\"\n    find \"$dir\" -maxdepth 2 -type f | sed 's#^#  #' | head -n 80\n    exit 1\n  fi\n\n  echo \"Pack validation OK.\"\n}\n\ndownload_stable_to_temp() {\n  local zip_file=\"GT_New_Horizons_${GTVERSION}_Server_Java_17-25.zip\"\n  local url=\"https://downloads.gtnewhorizons.com/ServerPacks/${zip_file}\"\n\n  echo \"Downloading stable GTNH ${GTVERSION}...\"\n  curl -fL --connect-timeout 20 --max-time 900 --retry 3 --retry-delay 3 \\\n    -o \"$WORK_DIR/$zip_file\" \"$url\"\n\n  unzip -q -o \"$WORK_DIR/$zip_file\" -d \"$EXTRACT_DIR\"\n  validate_pack \"$EXTRACT_DIR\"\n}\n\ndownload_tst() {\n  echo \"Twist Space Technology support is always enabled in this egg.\"\n\n  if [[ \"$GTVERSION\" != \"2.8.4\" ]]; then\n    echo \"WARNING: TST upstream README has listed GTNH 2.8.4 as the maintained/supported branch.\"\n    echo \"WARNING: You selected GTVERSION=$GTVERSION. Continuing anyway.\"\n  fi\n\n  mkdir -p \"$BASE_DIR/mods\"\n\n  if [[ -z \"$TST_VERSION\" || \"$TST_VERSION\" == \"latest\" ]]; then\n    echo \"Resolving latest TST release tag...\"\n    TST_VERSION=\"$(curl -fsSLI -o /dev/null -w '%{url_effective}' https://github.com/Nxer/Twist-Space-Technology-Mod/releases/latest | sed 's#.*/##')\"\n    if [[ -z \"$TST_VERSION\" ]]; then\n      echo \"ERROR: Failed to resolve latest TST release tag.\"\n      exit 1\n    fi\n  fi\n\n  local tst_jar=\"TwistSpaceTechnology-${TST_VERSION}.jar\"\n  local tst_url=\"https://github.com/Nxer/Twist-Space-Technology-Mod/releases/download/${TST_VERSION}/${tst_jar}\"\n\n  echo \"Removing old TST jars...\"\n  find \"$BASE_DIR/mods\" -maxdepth 1 -type f \\( -name 'TwistSpaceTechnology-*.jar' -o -name 'TwistSpaceTechnology *.jar' \\) -delete\n\n  echo \"Downloading ${tst_jar}...\"\n  curl -fL --connect-timeout 20 --max-time 900 --retry 3 --retry-delay 3 \\\n    -o \"$BASE_DIR/mods/$tst_jar\" \"$tst_url\"\n\n  if [[ \"$TST_UPDATE\" == \"1\" ]]; then\n    echo \"TST update mode enabled -> resetting GregTech.lang and TwistSpaceTechnology.cfg as recommended by the TST README...\"\n    rm -f \"$BASE_DIR/GregTech.lang\" \"$BASE_DIR/config/GregTech.lang\"\n    rm -f \"$BASE_DIR/config/TwistSpaceTechnology.cfg\"\n  else\n    echo \"TST update mode disabled -> keeping existing GregTech.lang and TwistSpaceTechnology.cfg\"\n  fi\n}\n\ndownload_stable_to_temp\n\nif [[ -d \"$BASE_DIR/config/JourneyMapServer\" ]]; then\n  echo \"Backing up JourneyMapServer...\"\n  cp -a \"$BASE_DIR/config/JourneyMapServer\" \"$BACKUP_DIR/\"\nelse\n  echo \"No JourneyMapServer directory found to back up.\"\nfi\n\n#this might break something in the future\necho \"Backing up serverutil settings, ops, whitelist and banned players files...\"\n\nfor path in \\\n  \"ops.json\" \\\n  \"whitelist.json\" \\\n  \"banned-players.json\" \\\n  \"banned-ips.json\" \\\n  \"serverutilities/serverutilities.cfg\" \\\n  \"serverutilities/server/ranks.txt\"\ndo\n  if [[ -e \"$BASE_DIR/$path\" ]]; then\n    echo \"Preserving $path\"\n    mkdir -p \"$BACKUP_DIR/$(dirname \"$path\")\"\n    cp -a \"$BASE_DIR/$path\" \"$BACKUP_DIR/$path\"\n  fi\ndone\n\necho \"Replacing old GTNH pack files and folders...\"\nrm -rf \\\n  \"$BASE_DIR/config\" \\\n  \"$BASE_DIR/libraries\" \\\n  \"$BASE_DIR/mods\" \\\n  \"$BASE_DIR/lwjgl3ify-forgePatches.jar\" \\\n  \"$BASE_DIR/java9args.txt\"\n\nrsync -a --no-perms \\\n  --exclude='.gtnh-install-work' \\\n  \"$EXTRACT_DIR\"/ \"$BASE_DIR\"/\n\nif [[ -d \"$BACKUP_DIR/JourneyMapServer\" ]]; then\n  echo \"Restoring JourneyMapServer...\"\n  mkdir -p \"$BASE_DIR/config\"\n  cp -a \"$BACKUP_DIR/JourneyMapServer\" \"$BASE_DIR/config/\"\nelse\n  echo \"No JourneyMapServer backup found - skipping restore.\"\nfi\n\n#this might break something in the future\necho \"Restoring serverutil settings, ops, whitelist and banned players files...\"\n\nfor path in \\\n  \"ops.json\" \\\n  \"whitelist.json\" \\\n  \"banned-players.json\" \\\n  \"banned-ips.json\" \\\n  \"serverutilities/serverutilities.cfg\" \\\n  \"serverutilities/server/ranks.txt\"\ndo\n  if [[ -e \"$BACKUP_DIR/$path\" ]]; then\n    echo \"Restoring $path\"\n    mkdir -p \"$BASE_DIR/$(dirname \"$path\")\"\n    cp -a \"$BACKUP_DIR/$path\" \"$BASE_DIR/$path\"\n  fi\ndone\n\ndownload_tst\n\n# This also prevents permission issues from downloaded zips.\necho \"Fixing file and directory permissions...\"\nfind \"$BASE_DIR\" -type d -exec chmod 755 {} \\;\nfind \"$BASE_DIR\" -type f -exec chmod 644 {} \\;\n\nrm -f \"$BASE_DIR\"/*.bat\n\nif [[ -f \"$BASE_DIR/startserver-java9.sh\" ]]; then\n  chmod +x \"$BASE_DIR/startserver-java9.sh\"\nfi\n\nrm -rf \"$WORK_DIR\"\n\necho \"Installation process is completed\"\n",
             "container": "debian:bookworm-slim",
             "entrypoint": "bash"
         }
     },
     "variables": [
+        {
+            "name": "Hardcore Mode",
+            "description": "Enable Hardcore Mode for the world",
+            "env_variable": "SERVER_HARDCORE",
+            "default_value": "false",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "required",
+                "in:true,false"
+            ],
+            "sort": 3
+        },
+        {
+            "name": "Max Players",
+            "description": "Set a total server player limit",
+            "env_variable": "MAX_PLAYERS",
+            "default_value": "20",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "required",
+                "numeric"
+            ],
+            "sort": 4
+        },
+        {
+            "name": "Message of the Day",
+            "description": "Set the server MOTD",
+            "env_variable": "SERVER_MOTD",
+            "default_value": "GT:New Horizons",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "nullable",
+                "string"
+            ],
+            "sort": 5
+        },
         {
             "name": "Modpack version",
             "description": "GTNH version for java 17-25 file. 2.8.x and up supported",
@@ -50,6 +89,123 @@
                 "required"
             ],
             "sort": 1
+        },
+        {
+            "name": "Old memory env (deprecated)",
+            "description": "Legacy compatibility to prevent a crash only if installed using an earlier version of this egg. Update startup command manually in admin view if so: java -Xms128M -XX:MaxRAMPercentage=90.0 -Dfml.readTimeout=180 @java9args.txt -jar lwjgl3ify-forgePatches.jar nogui",
+            "env_variable": "SERVER_MAXRAM",
+            "default_value": "6G",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "required"
+            ],
+            "sort": 14
+        },
+        {
+            "name": "Query Port",
+            "description": "Set the query port for the server",
+            "env_variable": "SERVER_QUERY_PORT",
+            "default_value": "25565",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "required",
+                "numeric"
+            ],
+            "sort": 8
+        },
+        {
+            "name": "Query Status",
+            "description": "Set server query status enabled/disabled",
+            "env_variable": "SERVER_QUERY",
+            "default_value": "false",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "required",
+                "in:true,false"
+            ],
+            "sort": 9
+        },
+        {
+            "name": "Rcon Status",
+            "description": "Enable or disable server rcon",
+            "env_variable": "SERVER_RCON",
+            "default_value": "false",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "required",
+                "in:true,false"
+            ],
+            "sort": 10
+        },
+        {
+            "name": "Server Rcon Port",
+            "description": "Set the server rcon port",
+            "env_variable": "SERVER_RCON_PORT",
+            "default_value": "25575",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "required",
+                "numeric"
+            ],
+            "sort": 11
+        },
+        {
+            "name": "Server Seed",
+            "description": "Set a custom seed for the World map",
+            "env_variable": "SERVER_SEED",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "nullable",
+                "string"
+            ],
+            "sort": 6
+        },
+        {
+            "name": "Server Whitelist",
+            "description": "Enable/Disable Server Whitelist",
+            "env_variable": "SERVER_WHITELIST",
+            "default_value": "false",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "required",
+                "in:true,false"
+            ],
+            "sort": 7
+        },
+        {
+            "name": "Twist Space Technology version",
+            "description": "Use a specific TST release tag such as 0.7.15, or 'latest' to resolve the newest release automatically.",
+            "env_variable": "TST_VERSION",
+            "default_value": "latest",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "required",
+                "string",
+                "max:30"
+            ],
+            "sort": 12
+        },
+        {
+            "name": "Update Twist Space Technology",
+            "description": "Set to 1 ONLY when updating TST. This resets GregTech.lang and TwistSpaceTechnology.cfg as required by the TST README. Set back to 0 after reinstall.",
+            "env_variable": "TST_UPDATE",
+            "default_value": "0",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "required",
+                "in:0,1"
+            ],
+            "sort": 13
         },
         {
             "name": "World Name",
@@ -64,162 +220,6 @@
                 "max:20"
             ],
             "sort": 2
-        },
-        {
-            "name": "Hardcore Mode",
-            "description": "Enable Hardcore Mode for the world",
-            "env_variable": "SERVER_HARDCORE",
-            "default_value": "false",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": [
-                "required",
-                "in:true,false"
-            ],
-            "sort": 4
-        },
-        {
-            "name": "Max Players",
-            "description": "Set a total server player limit",
-            "env_variable": "MAX_PLAYERS",
-            "default_value": "20",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": [
-                "required",
-                "numeric"
-            ],
-            "sort": 5
-        },
-        {
-            "name": "Message of the Day",
-            "description": "Set the server MOTD",
-            "env_variable": "SERVER_MOTD",
-            "default_value": "GT:New Horizons",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": [
-                "nullable",
-                "string"
-            ],
-            "sort": 6
-        },
-        {
-            "name": "Server Seed",
-            "description": "Set a custom seed for the World map",
-            "env_variable": "SERVER_SEED",
-            "default_value": "",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": [
-                "nullable",
-                "string"
-            ],
-            "sort": 7
-        },
-        {
-            "name": "Server Whitelist",
-            "description": "Enable/Disable Server Whitelist",
-            "env_variable": "SERVER_WHITELIST",
-            "default_value": "false",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": [
-                "required",
-                "in:true,false"
-            ],
-            "sort": 8
-        },
-        {
-            "name": "Query Port",
-            "description": "Set the query port for the server",
-            "env_variable": "SERVER_QUERY_PORT",
-            "default_value": "25565",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": [
-                "required",
-                "numeric"
-            ],
-            "sort": 9
-        },
-        {
-            "name": "Query Status",
-            "description": "Set server query status enabled/disabled",
-            "env_variable": "SERVER_QUERY",
-            "default_value": "false",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": [
-                "required",
-                "in:true,false"
-            ],
-            "sort": 10
-        },
-        {
-            "name": "Rcon Status",
-            "description": "Enable or disable server rcon",
-            "env_variable": "SERVER_RCON",
-            "default_value": "false",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": [
-                "required",
-                "in:true,false"
-            ],
-            "sort": 11
-        },
-        {
-            "name": "Server Rcon Port",
-            "description": "Set the server rcon port",
-            "env_variable": "SERVER_RCON_PORT",
-            "default_value": "25575",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": [
-                "required",
-                "numeric"
-            ],
-            "sort": 12
-        },
-        {
-            "name": "Twist Space Technology version",
-            "description": "Use a specific TST release tag such as 0.7.15, or 'latest' to resolve the newest release automatically.",
-            "env_variable": "TST_VERSION",
-            "default_value": "latest",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": [
-                "required",
-                "string",
-                "max:30"
-            ],
-            "sort": 13
-        },
-        {
-            "name": "Update Twist Space Technology",
-            "description": "Set to 1 ONLY when updating TST. This resets GregTech.lang and TwistSpaceTechnology.cfg as required by the TST README. Set back to 0 after reinstall.",
-            "env_variable": "TST_UPDATE",
-            "default_value": "0",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": [
-                "required",
-                "in:0,1"
-            ],
-            "sort": 14
-        },
-        {
-            "name": "Old memory env (deprecated)",
-            "description": "Legacy compatibility to prevent a crash only if installed using an earlier version of this egg. Update startup command manually in admin view if so: java -Xms128M -XX:MaxRAMPercentage=90.0 -Dfml.readTimeout=180 @java9args.txt -jar lwjgl3ify-forgePatches.jar nogui",
-            "env_variable": "SERVER_MAXRAM",
-            "default_value": "6G",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": [
-                "required"
-            ],
-            "sort": 99
         }
     ]
 }
