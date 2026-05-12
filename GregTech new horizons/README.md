@@ -25,6 +25,9 @@ Daily build downloading fixed from expecting double zipped server file
 New env for downloading specified daily
 Container reserved memory changed from 90% to 95% for gtnh
 
+12.05.2026
+Now preserves serverutil settings, ops, whitelist and banned players on reinstall
+
 ---
 
 Pterodactyl version found [here](https://github.com/Loordi/Pterodactyl-eggs/tree/main/GregTech%20new%20horizons)
