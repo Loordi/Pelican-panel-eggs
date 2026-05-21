@@ -31,6 +31,9 @@ Container reserved memory changed from 90% to 95% for gtnh
 12.05.2026
 Now preserves serverutil ranks, ops, whitelist and banned players on reinstall
 
+21.05.2026
+removed serverutilities.cfg from the automatic backup/restore system
+
 ---
 
 Pterodactyl version found [here](https://github.com/Loordi/Pterodactyl-eggs/tree/main/GregTech%20new%20horizons)
