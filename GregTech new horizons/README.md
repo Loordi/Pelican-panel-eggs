@@ -32,7 +32,7 @@ Container reserved memory changed from 90% to 95% for gtnh
 Now preserves serverutil ranks, ops, whitelist and banned players on reinstall
 
 21.05.2026
-removed serverutilities.cfg from the automatic backup/restore system
+removed serverutilities.cfg from the reinstall backup/restore system
 
 ---
 
