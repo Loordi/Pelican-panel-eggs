@@ -8,7 +8,9 @@ Requires github token.
 
 This egg automates much of the manual setup described in the official documentation.
 just change the version and reinstall to update.
-JourneyMapServer data is kept when reinstalled.
+JourneyMapServer data, ops.json, whitelist.json, banned-players.json, banned-ips.json, serverutilities/server/ranks.txt is kept when reinstalled.
+REMEMBER TO ENABLE SERVERUTIL RANKS AFTER REINSTALL!
+/Files/serverutilities/serverutilities.cfg
 
 ⚠️ Always back up your world before reinstalling!
 
@@ -26,7 +28,7 @@ New env for downloading specified daily
 Container reserved memory changed from 90% to 95% for gtnh
 
 12.05.2026
-Now preserves serverutil settings, ops, whitelist and banned players on reinstall
+Now preserves serverutil ranks, ops, whitelist and banned players on reinstall
 
 ---
 
