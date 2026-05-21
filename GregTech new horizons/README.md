@@ -8,6 +8,7 @@ Requires github token.
 
 This egg automates much of the manual setup described in the official documentation.
 just change the version and reinstall to update.
+
 JourneyMapServer data, ops.json, whitelist.json, banned-players.json, banned-ips.json, serverutilities/server/ranks.txt is kept when reinstalled.
 REMEMBER TO ENABLE SERVERUTIL RANKS AFTER REINSTALL!
 /Files/serverutilities/serverutilities.cfg
