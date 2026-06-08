@@ -34,6 +34,9 @@ Now preserves serverutil ranks, ops, whitelist and banned players on reinstall
 21.05.2026
 removed serverutilities.cfg from the reinstall backup/restore system
 
+08.06.2026
+Beta version support. Egg icon added
+
 ---
 
 Pterodactyl version found [here](https://github.com/Loordi/Pterodactyl-eggs/tree/main/GregTech%20new%20horizons)
