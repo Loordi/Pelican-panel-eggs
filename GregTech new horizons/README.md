@@ -32,7 +32,7 @@ For daily builds:
 To update an existing server:
 
 1. Stop the server and create a full backup.
-2. Select the wanted version and a compatible Java image.
+2. Select the wanted version and a compatible Java image in the startup menu.
 3. Reinstall the server.
 4. Wait until the installer reports that installation completed successfully.
 5. Refresh the Pelican page and start the server.
@@ -40,6 +40,8 @@ To update an existing server:
 The installer cannot start the server automatically after a reinstall. If a server was migrated from an older egg, reset its startup command to the egg default if it still contains `SERVER_MAXRAM`.
 
 ## Data preserved during reinstall
+
+World folders are left untouched during reinstall. A full backup is still strongly recommended.
 
 The following paths are backed up and restored automatically:
 
