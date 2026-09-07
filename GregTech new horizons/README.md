@@ -39,6 +39,10 @@ To update an existing server:
 
 The installer cannot start the server automatically after a reinstall. If a server was migrated from an older egg, reset its startup command to the egg default if it still contains `SERVER_MAXRAM`.
 
+If an installation stops after backing up the preserved files, the next attempt restores that completed backup before clearing its temporary files. If restoration fails, the backup stays available for another attempt. This recovers the selected files listed below, not the entire previous modpack.
+
+If the installer reports an **unmarked backup**, it stops without deleting it. This can be an incomplete backup or one left by an older egg. Copy `.gtnh-install-work/backup` somewhere safe, inspect and recover its preserved files to their corresponding server paths (for example, `backup/config/JourneyMapServer` to `config/JourneyMapServer`), and only then remove `.gtnh-install-work` and reinstall. Use your full server backup if the preserved copy is incomplete.
+
 ## Data preserved during reinstall
 
 World folders are left untouched during reinstall. A full backup is still strongly recommended.
